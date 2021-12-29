@@ -1,6 +1,7 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcryptjs')
 const Schema = mongoose.Schema
+const passportLocalMongoose = require('passport-local-mongoose');
 
 const userSchema = new Schema({
   username: {
@@ -30,6 +31,7 @@ const userSchema = new Schema({
   }
 });
 
+
 userSchema.pre('save', function (next) {
   const user = this
   bcrypt.genSalt(10, function (err, salt) {
@@ -53,5 +55,5 @@ userSchema.pre('save', function (next) {
 userSchema.methods.hasSamePassword = function (password) {
   return bcrypt.compareSync(password, this.password)
 }
-
+userSchema.plugin(passportLocalMongoose);
 module.exports = mongoose.model('User', userSchema)
